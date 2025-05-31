@@ -12,7 +12,7 @@ spring:
       token: ${VAULT_TOKEN:hvs.VSlxeCypMevB7HLAYZ1hB73L}
       generic:
         enabled: true
-        application-name: gastos-service
+        application-name: salario-service
     config:
       username: ${CONFIG_SERVER_USER:config}
       password: ${CONFIG_SERVER_PASS:o5qByEjgPOwh3yXOqf}

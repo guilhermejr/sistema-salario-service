@@ -1,0 +1,12 @@
+services:
+  salario-service:
+    image: guilhermejr/sistema-salario-service
+    container_name: salario-service
+    restart: always
+    ports:
+      - "9009:9009"
+
+networks:
+  default:
+    external: true
+    name: rede
