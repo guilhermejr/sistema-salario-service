@@ -1,0 +1,1 @@
+ALTER TABLE tipo_itens ADD COLUMN dica TEXT;
