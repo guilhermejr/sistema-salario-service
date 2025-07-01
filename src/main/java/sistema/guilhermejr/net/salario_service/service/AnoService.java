@@ -24,7 +24,7 @@ public class AnoService {
     public List<AnoResponse> retornar() {
 
         UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
-        List<Ano> ano = anoRepository.findAllByUsuarioOrderByAnoAsc(usuario);
+        List<Ano> ano = anoRepository.findAllByUsuarioOrderByAnoDesc(usuario);
 
         return anoMapper.mapList(ano);
 

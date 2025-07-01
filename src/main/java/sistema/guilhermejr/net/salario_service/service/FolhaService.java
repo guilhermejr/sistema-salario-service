@@ -14,7 +14,6 @@ import sistema.guilhermejr.net.salario_service.domain.repository.*;
 import sistema.guilhermejr.net.salario_service.exception.ExceptionNotFound;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,7 +49,22 @@ public class FolhaService {
     }
 
     public FolhaResponse retornaUm(Long id) {
-        return folhaMapper.mapObject(folhaRepository.retornaUm(id));
+
+        Folha folha = folhaExiste(id);
+        if (folha != null) {
+            return folhaMapper.mapObject(folhaRepository.retornaUm(id));
+        } else {
+            log.error("Folha não retornada: {}", id);
+            throw new ExceptionNotFound("Não pode retornar folha. Id não encontrado: " + id);
+        }
+
+    }
+
+    private Folha folhaExiste(Long id) {
+
+        Folha folha = folhaRepository.findById(id).orElseThrow(() -> new ExceptionNotFound("Folha não encontrada: " + id));
+        return folha;
+
     }
 
     @Transactional
@@ -71,7 +85,7 @@ public class FolhaService {
         for (Item item: itens) {
 
             TipoItem tipoItem = tipoItemRepository.findById(item.getTipoItem().getId()).orElseThrow(() -> new ExceptionNotFound("Tipo item não encontrado: " + item.getTipoItem().getId()));
-
+            item.setTipoItem(tipoItem);
             if (tipoItem.getTipo() == 'P') {
                 proventos = proventos.add(item.getValor());
             }
@@ -95,12 +109,10 @@ public class FolhaService {
         folhaRepository.save(folha);
 
         // --- Items ---
-        List<Item> item = new ArrayList<>();
         itens.forEach(i -> {
             i.setFolha(folha);
             i.setUsuario(usuario);
             itemRepository.save(i);
-            item.add(i);
         });
 
         // --- Verifica se precisa criar registro com ano ---

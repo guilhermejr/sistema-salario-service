@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface AnoRepository extends JpaRepository<Ano, Long> {
 
-    List<Ano> findAllByUsuarioOrderByAnoAsc(UUID usuario);
+    List<Ano> findAllByUsuarioOrderByAnoDesc(UUID usuario);
 
     Optional<Ano> findByAnoAndUsuario(Integer ano, UUID usuario);
 

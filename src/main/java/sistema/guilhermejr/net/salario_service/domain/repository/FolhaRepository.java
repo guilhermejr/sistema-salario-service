@@ -5,11 +5,14 @@ import org.springframework.data.jpa.repository.Query;
 import sistema.guilhermejr.net.salario_service.domain.entity.Folha;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface FolhaRepository extends JpaRepository<Folha, Long> {
 
     List<Folha> findAllByUsuarioOrderByDataPagamentoDesc(UUID usuario);
+
+    Optional<Folha> findById(Long id);
 
 //    @Query( value = "SELECT " +
 //            "* " +
