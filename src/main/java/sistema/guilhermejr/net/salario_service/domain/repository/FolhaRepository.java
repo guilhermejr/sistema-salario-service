@@ -33,6 +33,6 @@ public interface FolhaRepository extends JpaRepository<Folha, Long> {
     @Query("SELECT f FROM Folha f JOIN TipoFolha tf ON f.tipoFolha = tf JOIN Item i ON i.folha = f JOIN TipoItem ti ON ti = i.tipoItem WHERE f.id = ?1 ORDER BY ti.tipo ASC")
     Folha retornaUm(Long id);
 
-    @Query("SELECT f FROM Folha f JOIN TipoFolha tf ON f.tipoFolha = tf JOIN Item i ON i.folha = f JOIN TipoItem ti ON ti = i.tipoItem WHERE f.usuario = ?1 AND EXTRACT(YEAR FROM f.dataPagamento) = ?2 ORDER BY ti.tipo ASC")
+    @Query("SELECT f FROM Folha f JOIN TipoFolha tf ON f.tipoFolha = tf JOIN Item i ON i.folha = f JOIN TipoItem ti ON ti = i.tipoItem WHERE f.usuario = ?1 AND EXTRACT(YEAR FROM f.dataPagamento) = ?2 ORDER BY f.dataPagamento ASC")
     List<Folha> retornaAno(UUID usuario, Long ano);
 }
