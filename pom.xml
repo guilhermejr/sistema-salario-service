@@ -89,6 +89,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.github.loki4j</groupId>
+            <artifactId>loki-logback-appender</artifactId>
+            <version>1.4.1</version>
+        </dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
