@@ -28,7 +28,7 @@ public class FolhaMapper extends ModelMapperConfig {
         Converter<List<ItemRequest>, List<Item>> itemConverterRequest = ctx -> {
           List<Item> itens = new ArrayList<>();
           ctx.getSource().forEach(item -> {
-              itens.add(Item.builder().valor(converteStringUtil.toBigDecimal(item.getValor())).tipoItem(TipoItem.builder().id(item.getTipoItemId()).build()).build());
+              itens.add(Item.builder().valor(converteStringUtil.toBigDecimal(item.getValor())).unidade(converteStringUtil.toBigDecimal(item.getUnidade())).tipoItem(TipoItem.builder().id(item.getTipoItemId()).build()).build());
           });
 
           return itens;
@@ -54,6 +54,7 @@ public class FolhaMapper extends ModelMapperConfig {
                 ItemResponse itemResponse = ItemResponse.builder()
                         .id(item.getId())
                         .valor(converteStringUtil.toStringBigDecimal(item.getValor()))
+                        .unidade(converteStringUtil.toStringBigDecimal(item.getUnidade()))
                         .tipoItem(tipoItemResponse)
                         .build();
                 itens.add(itemResponse);

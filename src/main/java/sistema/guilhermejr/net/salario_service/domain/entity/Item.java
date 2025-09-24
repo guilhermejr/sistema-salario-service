@@ -31,6 +31,9 @@ public class Item implements Serializable {
     @Column(nullable = false)
     private BigDecimal valor;
 
+    @Column
+    private BigDecimal unidade;
+
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @CreationTimestamp

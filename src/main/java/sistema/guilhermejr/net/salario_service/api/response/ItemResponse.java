@@ -15,6 +15,7 @@ public class ItemResponse {
 
     private Long id;
     private String valor;
+    private String unidade;
     private LocalDateTime criado;
     private LocalDateTime atualizado;
     private TipoItemResponse tipoItem;

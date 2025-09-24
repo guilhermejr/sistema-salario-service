@@ -20,4 +20,7 @@ public class ItemRequest {
     @NotNull
     private Long tipoItemId;
 
+    @ValorMonetario
+    private String unidade;
+
 }
