@@ -58,4 +58,13 @@ public class TipoItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(tipoItemResponse);
 
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TipoItemResponse> atualizar(@PathVariable Long id, @Valid @RequestBody TipoItemRequest tipoItemRequest) {
+
+        log.info("Atualizando tipo de item: {}", id);
+        TipoItemResponse tipoItemResponse = tipoItemService.atualizar(id, tipoItemRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(tipoItemResponse);
+
+    }
 }

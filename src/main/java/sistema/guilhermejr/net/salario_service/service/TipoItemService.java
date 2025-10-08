@@ -1,6 +1,7 @@
 package sistema.guilhermejr.net.salario_service.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,29 @@ public class TipoItemService {
     public TipoItemResponse inserir(TipoItemRequest tipoItemRequest) {
 
         return salvar(tipoItemRequest, null);
+
+    }
+
+    @Transactional
+    public TipoItemResponse atualizar(Long id, @Valid TipoItemRequest tipoItemRequest) {
+
+        TipoItem tipoItem = tipoItemExiste(id);
+        if (tipoItem != null) {
+
+            UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+            tipoItem.setDescricao(tipoItemRequest.getDescricao());
+            tipoItem.setDica(tipoItemRequest.getDica());
+            tipoItem.setTipo(tipoItemRequest.getTipo());
+
+            TipoItem tipoItemSave = tipoItemRepository.save(tipoItem);
+            return tipoItemMapper.mapObject(tipoItemSave);
+
+        } else {
+
+            log.error("Tipo Item não atualizado: {}", id);
+            throw new ExceptionNotFound("Não pode atualizar tipo de item. Id não encontrado: " + id);
+
+        }
 
     }
 
