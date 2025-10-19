@@ -68,7 +68,6 @@ public class TipoItemService {
         TipoItem tipoItem = tipoItemExiste(id);
         if (tipoItem != null) {
 
-            UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
             tipoItem.setDescricao(tipoItemRequest.getDescricao());
             tipoItem.setDica(tipoItemRequest.getDica());
             tipoItem.setTipo(tipoItemRequest.getTipo());
