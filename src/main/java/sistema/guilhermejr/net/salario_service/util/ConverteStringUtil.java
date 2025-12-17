@@ -6,9 +6,11 @@ import sistema.guilhermejr.net.salario_service.exception.ExceptionDefault;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
+import java.util.Locale;
 
 @Log4j2
 @Component
@@ -22,16 +24,17 @@ public class ConverteStringUtil {
     }
 
     public String toStringBigDecimal(BigDecimal valor) {
-//        Locale local = new Locale("pt","BR");
-//        NumberFormat nf = NumberFormat.getCurrencyInstance(local);
-//        return nf.format(valor);
 
         if (valor == null) {
             valor = BigDecimal.ZERO;
         }
 
-        DecimalFormat df = new DecimalFormat("#,###,##0.00");
-        return df.format(valor);
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols(new Locale("pt", "BR"));
+        simbolos.setGroupingSeparator('.'); // separador de milhar
+        simbolos.setDecimalSeparator(',');  // separador decimal
+
+        DecimalFormat formato = new DecimalFormat("#,##0.00", simbolos);
+        return formato.format(valor);
 
     }
 
