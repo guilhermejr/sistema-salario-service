@@ -16,7 +16,6 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAnyRole('SALARIO')")
 @RequestMapping("/tipo-folha")
 public class TipoFolhaController {
