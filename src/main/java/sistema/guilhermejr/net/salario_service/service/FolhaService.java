@@ -8,7 +8,7 @@ import sistema.guilhermejr.net.salario_service.api.mapper.FolhaMapper;
 import sistema.guilhermejr.net.salario_service.api.request.FolhaRequest;
 import sistema.guilhermejr.net.salario_service.api.response.FolhaListagemResponse;
 import sistema.guilhermejr.net.salario_service.api.response.FolhaResponse;
-import sistema.guilhermejr.net.salario_service.config.security.AuthenticationCurrentUserService;
+import net.guilhermejr.seguranca.jwt.AuthenticationCurrentUserService;
 import sistema.guilhermejr.net.salario_service.domain.entity.*;
 import sistema.guilhermejr.net.salario_service.domain.repository.*;
 import sistema.guilhermejr.net.salario_service.exception.ExceptionNotFound;

@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import sistema.guilhermejr.net.salario_service.api.mapper.AnoMapper;
 import sistema.guilhermejr.net.salario_service.api.response.AnoResponse;
-import sistema.guilhermejr.net.salario_service.config.security.AuthenticationCurrentUserService;
+import net.guilhermejr.seguranca.jwt.AuthenticationCurrentUserService;
 import sistema.guilhermejr.net.salario_service.domain.entity.Ano;
 import sistema.guilhermejr.net.salario_service.domain.repository.AnoRepository;
 

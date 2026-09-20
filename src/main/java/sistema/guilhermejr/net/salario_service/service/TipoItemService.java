@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import sistema.guilhermejr.net.salario_service.api.mapper.TipoItemMapper;
 import sistema.guilhermejr.net.salario_service.api.request.TipoItemRequest;
 import sistema.guilhermejr.net.salario_service.api.response.TipoItemResponse;
-import sistema.guilhermejr.net.salario_service.config.security.AuthenticationCurrentUserService;
+import net.guilhermejr.seguranca.jwt.AuthenticationCurrentUserService;
 import sistema.guilhermejr.net.salario_service.domain.entity.TipoItem;
 import sistema.guilhermejr.net.salario_service.domain.repository.TipoItemRepository;
 import sistema.guilhermejr.net.salario_service.exception.ExceptionNotFound;
