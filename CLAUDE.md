@@ -14,6 +14,10 @@ Payroll records — payslips, earnings and deductions by year.
 
 Part of a personal microservices system; sibling repos live at `../sistema-*`. The API gateway fronts it at `https://sistema-backend.guilhermejr.net/salario-service`.
 
+## Payslip items (tipo-item)
+
+Earnings (`P`) and deductions (`D`) are the user's own list, managed from the frontend's "Itens da folha". They are deactivated, never deleted: `GET /tipo-item/P` and `/D` (used by the new-payslip form) return only active ones, `GET /tipo-item` returns all for the management screen, `PUT /tipo-item/{id}/ativar|desativar`. Payslips already saved keep showing a deactivated item. An item already used in a payslip can't switch between `P` and `D` (`TipoItemService.atualizar`): `FolhaService` adds each item to the payslip's earnings or deductions by its type when saving, so switching would leave old payslips wrong. Lookups by id are scoped to the owner — another user's id answers 404.
+
 ## Security comes from a library
 
 There is no `config/security` package here. Everything — JWT validation, the filter, the security chains, `@EnableMethodSecurity` — arrives from `net.guilhermejr.sistema:seguranca-jwt` through Spring Boot **auto-configuration**. Declaring the dependency is all it takes.

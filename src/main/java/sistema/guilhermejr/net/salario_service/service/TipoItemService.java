@@ -10,7 +10,9 @@ import sistema.guilhermejr.net.salario_service.api.request.TipoItemRequest;
 import sistema.guilhermejr.net.salario_service.api.response.TipoItemResponse;
 import net.guilhermejr.seguranca.jwt.AuthenticationCurrentUserService;
 import sistema.guilhermejr.net.salario_service.domain.entity.TipoItem;
+import sistema.guilhermejr.net.salario_service.domain.repository.ItemRepository;
 import sistema.guilhermejr.net.salario_service.domain.repository.TipoItemRepository;
+import sistema.guilhermejr.net.salario_service.exception.ExceptionDefault;
 import sistema.guilhermejr.net.salario_service.exception.ExceptionNotFound;
 
 import java.util.List;
@@ -22,8 +24,17 @@ import java.util.UUID;
 public class TipoItemService {
 
     private final TipoItemRepository tipoItemRepository;
+    private final ItemRepository itemRepository;
     private final TipoItemMapper tipoItemMapper;
     private final AuthenticationCurrentUserService authenticationCurrentUserService;
+
+    /** Proventos e depois descontos, cada grupo por descrição. */
+    public List<TipoItemResponse> retornarTodos() {
+
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+        return tipoItemMapper.mapList(tipoItemRepository.findAllByUsuarioOrderByTipoDescDescricaoAsc(usuario));
+
+    }
 
     public List<TipoItemResponse> retornarP() {
 
@@ -68,6 +79,12 @@ public class TipoItemService {
         TipoItem tipoItem = tipoItemExiste(id);
         if (tipoItem != null) {
 
+            // As folhas guardam os totais calculados pelo tipo do item: trocar o tipo de um
+            // item já usado deixaria proventos e descontos dessas folhas errados.
+            if (!tipoItem.getTipo().equals(tipoItemRequest.getTipo()) && itemRepository.existsByTipoItem(tipoItem)) {
+                throw new ExceptionDefault("Este item já foi usado em folhas e não pode trocar entre provento e desconto.");
+            }
+
             tipoItem.setDescricao(tipoItemRequest.getDescricao());
             tipoItem.setDica(tipoItemRequest.getDica());
             tipoItem.setTipo(tipoItemRequest.getTipo());
@@ -84,10 +101,21 @@ public class TipoItemService {
 
     }
 
+    /** Desativado, o item some da nova folha; as folhas já gravadas continuam com ele. */
+    @Transactional
+    public TipoItemResponse alterarAtivo(Long id, boolean ativo) {
+
+        TipoItem tipoItem = tipoItemExiste(id);
+        tipoItem.setAtivo(ativo);
+        return tipoItemMapper.mapObject(tipoItemRepository.save(tipoItem));
+
+    }
+
+    // Item de outro usuário responde 404, como um id que não existe.
     private TipoItem tipoItemExiste(Long id) {
 
-        TipoItem tipoItem = tipoItemRepository.findById(id).orElseThrow(() -> new ExceptionNotFound("Tipo item não encontrado: " +  id));
-        return tipoItem;
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+        return tipoItemRepository.findByIdAndUsuario(id, usuario).orElseThrow(() -> new ExceptionNotFound("Tipo item não encontrado: " +  id));
 
     }
 

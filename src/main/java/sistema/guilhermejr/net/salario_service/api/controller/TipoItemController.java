@@ -22,6 +22,16 @@ public class TipoItemController {
 
     private final TipoItemService tipoItemService;
 
+    /** Todos os itens, desativados inclusive, para a tela de cadastro. */
+    @GetMapping
+    public ResponseEntity<List<TipoItemResponse>> retornarTodos() {
+
+        log.info("Retornando todos os tipos de item");
+        List<TipoItemResponse> tipoItemResponseList = tipoItemService.retornarTodos();
+        return ResponseEntity.status(HttpStatus.OK).body(tipoItemResponseList);
+
+    }
+
     @GetMapping("/P")
     public ResponseEntity<List<TipoItemResponse>> retornarP() {
 
@@ -66,4 +76,23 @@ public class TipoItemController {
         return ResponseEntity.status(HttpStatus.OK).body(tipoItemResponse);
 
     }
+
+    @PutMapping("/{id}/desativar")
+    public ResponseEntity<TipoItemResponse> desativar(@PathVariable Long id) {
+
+        log.info("Desativando tipo de item: {}", id);
+        TipoItemResponse tipoItemResponse = tipoItemService.alterarAtivo(id, false);
+        return ResponseEntity.status(HttpStatus.OK).body(tipoItemResponse);
+
+    }
+
+    @PutMapping("/{id}/ativar")
+    public ResponseEntity<TipoItemResponse> ativar(@PathVariable Long id) {
+
+        log.info("Ativando tipo de item: {}", id);
+        TipoItemResponse tipoItemResponse = tipoItemService.alterarAtivo(id, true);
+        return ResponseEntity.status(HttpStatus.OK).body(tipoItemResponse);
+
+    }
+
 }
