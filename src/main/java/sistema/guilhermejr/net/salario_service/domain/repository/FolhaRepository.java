@@ -14,6 +14,8 @@ public interface FolhaRepository extends JpaRepository<Folha, Long> {
 
     Optional<Folha> findById(Long id);
 
+    Optional<Folha> findByIdAndUsuario(Long id, UUID usuario);
+
 //    @Query( value = "SELECT " +
 //            "* " +
 //            "FROM " +

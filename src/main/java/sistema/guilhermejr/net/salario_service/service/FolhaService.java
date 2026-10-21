@@ -62,7 +62,9 @@ public class FolhaService {
 
     private Folha folhaExiste(Long id) {
 
-        Folha folha = folhaRepository.findById(id).orElseThrow(() -> new ExceptionNotFound("Folha não encontrada: " + id));
+        // Folha de outro usuário responde 404, como um id que não existe.
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+        Folha folha = folhaRepository.findByIdAndUsuario(id, usuario).orElseThrow(() -> new ExceptionNotFound("Folha não encontrada: " + id));
         return folha;
 
     }
@@ -84,7 +86,8 @@ public class FolhaService {
 
         for (Item item: itens) {
 
-            TipoItem tipoItem = tipoItemRepository.findById(item.getTipoItem().getId()).orElseThrow(() -> new ExceptionNotFound("Tipo item não encontrado: " + item.getTipoItem().getId()));
+            // Só os itens e o tipo de folha do próprio usuário.
+            TipoItem tipoItem = tipoItemRepository.findByIdAndUsuario(item.getTipoItem().getId(), usuario).orElseThrow(() -> new ExceptionNotFound("Tipo item não encontrado: " + item.getTipoItem().getId()));
             item.setTipoItem(tipoItem);
             if (tipoItem.getTipo() == 'P') {
                 proventos = proventos.add(item.getValor());
@@ -102,7 +105,7 @@ public class FolhaService {
         folha.setTotalLiquido(liquido);
 
         // --- Tipo Folha ---
-        TipoFolha tipoFolha = tipoFolhaRepository.findById(folha.getTipoFolha().getId()).orElseThrow(() -> new ExceptionNotFound("Tipo folha não encontrado: "+ folha.getTipoFolha().getId()));
+        TipoFolha tipoFolha = tipoFolhaRepository.findByIdAndUsuario(folha.getTipoFolha().getId(), usuario).orElseThrow(() -> new ExceptionNotFound("Tipo folha não encontrado: "+ folha.getTipoFolha().getId()));
         folha.setTipoFolha(tipoFolha);
 
         // --- Salva folha ---

@@ -47,7 +47,9 @@ public class TipoFolhaService {
 
     private TipoFolha tipoFolhaExiste(Long id) {
 
-        TipoFolha tipoFolha = tipoFolhaRepository.findByIdAndAtivoTrue(id).orElseThrow(() -> new ExceptionNotFound("Tipo folha não encontrado: " + id));
+        // Tipo de folha de outro usuário responde 404, como um id que não existe.
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+        TipoFolha tipoFolha = tipoFolhaRepository.findByIdAndUsuarioAndAtivoTrue(id, usuario).orElseThrow(() -> new ExceptionNotFound("Tipo folha não encontrado: " + id));
         return tipoFolha;
 
     }

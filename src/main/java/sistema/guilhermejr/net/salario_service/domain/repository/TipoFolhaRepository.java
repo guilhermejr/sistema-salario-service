@@ -11,6 +11,8 @@ public interface TipoFolhaRepository extends JpaRepository<TipoFolha, Long> {
 
     List<TipoFolha> findAllByUsuarioOrderByDescricaoAsc(UUID usuario);
 
-    Optional<TipoFolha> findByIdAndAtivoTrue(Long id);
+    Optional<TipoFolha> findByIdAndUsuarioAndAtivoTrue(Long id, UUID usuario);
+
+    Optional<TipoFolha> findByIdAndUsuario(Long id, UUID usuario);
 
 }
