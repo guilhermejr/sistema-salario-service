@@ -60,4 +60,13 @@ public class FolhaController {
 
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<FolhaResponse> atualizar(@PathVariable Long id, @Valid @RequestBody FolhaRequest folhaRequest) {
+
+        log.info("Atualizando folha: {}", id);
+        FolhaResponse folhaResponse = folhaService.atualizar(id, folhaRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(folhaResponse);
+
+    }
+
 }

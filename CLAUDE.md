@@ -18,6 +18,10 @@ Part of a personal microservices system; sibling repos live at `../sistema-*`. T
 
 Earnings (`P`) and deductions (`D`) are the user's own list, managed from the frontend's "Itens da folha". They are deactivated, never deleted: `GET /tipo-item/P` and `/D` (used by the new-payslip form) return only active ones, `GET /tipo-item` returns all for the management screen, `PUT /tipo-item/{id}/ativar|desativar`. Payslips already saved keep showing a deactivated item. An item already used in a payslip can't switch between `P` and `D` (`TipoItemService.atualizar`): `FolhaService` adds each item to the payslip's earnings or deductions by its type when saving, so switching would leave old payslips wrong.
 
+## Editing a payslip
+
+`PUT /folha/{id}` takes the same `FolhaRequest` as `POST /folha` and rewrites the payslip: its items are deleted and the request's are saved, totals are recomputed (`gravar`, shared with `inserir`). A deactivated item or payslip type is still accepted, so an old payslip can be saved as it is. If the date moves the payslip to another year, that year's `Ano` row is created as on insert, and the previous year's row is deleted when no payslip is left in it. The new items are put on the entity only after `gravar`: saving an existing `Folha` is a `merge`, and merging it with a list of items that have no id yet broke the response mapping (`Item.getTipoItem()` came back null).
+
 **Every lookup by id is scoped to the owner** (`findByIdAndUsuario`): payslip, payslip type and item, including the item and type ids inside `POST /folha`. Another user's id answers 404, not 403.
 
 ## Security comes from a library

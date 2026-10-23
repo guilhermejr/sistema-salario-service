@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import sistema.guilhermejr.net.salario_service.domain.entity.Folha;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +16,8 @@ public interface FolhaRepository extends JpaRepository<Folha, Long> {
     Optional<Folha> findById(Long id);
 
     Optional<Folha> findByIdAndUsuario(Long id, UUID usuario);
+
+    boolean existsByUsuarioAndDataPagamentoBetween(UUID usuario, LocalDate inicio, LocalDate fim);
 
 //    @Query( value = "SELECT " +
 //            "* " +

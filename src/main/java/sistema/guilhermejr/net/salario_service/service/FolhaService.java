@@ -14,6 +14,7 @@ import sistema.guilhermejr.net.salario_service.domain.repository.*;
 import sistema.guilhermejr.net.salario_service.exception.ExceptionNotFound;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,7 +79,48 @@ public class FolhaService {
         folha.setId(null);
         folha.setUsuario(usuario);
 
-        List<Item> itens = folha.getItems();
+        gravar(folha, folha.getItems(), usuario);
+        garantirAno(folha.getDataPagamento().getYear(), usuario);
+
+        return folhaMapper.mapObject(folha);
+
+    }
+
+    @Transactional
+    public FolhaResponse atualizar(Long id, FolhaRequest folhaRequest) {
+
+        UUID usuario = authenticationCurrentUserService.getCurrentUser().getId();
+
+        Folha folha = folhaExiste(id);
+        Integer anoAnterior = folha.getDataPagamento().getYear();
+        Folha dados = folhaMapper.mapObject(folhaRequest);
+
+        // Os itens são regravados: saem os antigos e entram os da requisição.
+        itemRepository.deleteAll(folha.getItems());
+
+        folha.setDataPagamento(dados.getDataPagamento());
+        folha.setTipoFolha(dados.getTipoFolha());
+
+        // Os itens novos só entram na folha depois de gravados: o save de uma folha
+        // já existente é um merge, que estragaria a lista com itens ainda sem id.
+        gravar(folha, dados.getItems(), usuario);
+        folha.setItems(dados.getItems());
+        garantirAno(folha.getDataPagamento().getYear(), usuario);
+
+        // A folha mudou de ano: o anterior sai da lista se ficou sem folhas.
+        if (!anoAnterior.equals(folha.getDataPagamento().getYear())
+                && !folhaRepository.existsByUsuarioAndDataPagamentoBetween(usuario, LocalDate.of(anoAnterior, 1, 1), LocalDate.of(anoAnterior, 12, 31))) {
+            anoRepository.findByAnoAndUsuario(anoAnterior, usuario).ifPresent(ano -> {
+                anoRepository.delete(ano);
+                log.info("Removido ano sem folhas: {}", anoAnterior);
+            });
+        }
+
+        return folhaMapper.mapObject(folha);
+
+    }
+
+    private void gravar(Folha folha, List<Item> itens, UUID usuario) {
 
         // --- Calcula valores ---
         BigDecimal proventos = BigDecimal.ZERO;
@@ -118,16 +160,17 @@ public class FolhaService {
             itemRepository.save(i);
         });
 
-        // --- Verifica se precisa criar registro com ano ---
-        Integer ano = Integer.parseInt(folhaRequest.getDataPagamento().substring(6));
+    }
+
+    // --- Verifica se precisa criar registro com ano ---
+    private void garantirAno(Integer ano, UUID usuario) {
+
         if (anoRepository.findByAnoAndUsuario(ano, usuario).isEmpty()) {
             Ano anoGravar = Ano.builder().ano(ano).usuario(usuario).build();
             anoRepository.save(anoGravar);
 
             log.info("Criado novo ano: {}", ano);
         }
-
-        return folhaMapper.mapObject(folha);
 
     }
 
