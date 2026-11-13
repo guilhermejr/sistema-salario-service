@@ -3,6 +3,7 @@ services:
     image: guilhermejr/sistema-salario-service
     container_name: salario-service
     restart: always
+    env_file: /home/guilhermejr/secrets/salario-service.env
     ports:
       - "127.0.0.1:9009:9009"
 
